@@ -1,29 +1,34 @@
-const dotenv = require('dotenv');
 const http = require('http');
+const express = require('express');
 const socketIo = require('socket.io');
 
-dotenv.config({ path: './config.env' });
-const app = require('./app');
-
-// Set up database
-// require('./db');
+const app = express();
 
 // Set up server
 const server = http.createServer(app);
 const io = socketIo(server);
 
-let numUsers = 0;
-
 io.on('connection', socket => {
   console.log('User connected!');
-  ++numUsers;
 
-  console.log('Usuarios: ', numUsers);
-  socket.on('message', ({ body, username }) => {
-    socket.emit('received', { body, username });
+  socket.on('join', user => {
+    socket.user = { ...user, id: socket.client.id };
+    const activeUsers = socket.client.conn.server.clientsCount;
+    socket.emit('login', { activeUsers, user: socket.user });
+    socket.broadcast.emit('new user', { activeUsers, user: socket.user });
   });
 
-  socket.on('disconnect', () => console.log('User disconnected!'));
+  socket.on('message', msg => {
+    socket.broadcast.emit('message', msg);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected!');
+    socket.broadcast.emit('left', {
+      activeUsers: socket.client.conn.server.clientsCount,
+      user: socket.user
+    });
+  });
 });
 
 const port = process.env.PORT || 9000;
