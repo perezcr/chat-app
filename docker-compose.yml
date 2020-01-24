@@ -1,0 +1,15 @@
+version: "3.7"
+
+services:
+  back:
+    build: ./back
+    environment:
+      PORT: 3000
+    ports:
+      - "9000:3000"
+  front:
+    build: ./front
+    ports:
+      - "80:80"
+    depends_on:
+      - back
