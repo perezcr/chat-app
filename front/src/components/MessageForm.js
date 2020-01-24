@@ -5,7 +5,6 @@ import SendIcon from '@material-ui/icons/Send';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    padding: '2px 4px',
     display: 'flex',
     alignItems: 'center'
   },
@@ -18,7 +17,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const SendMessageForm = ({ sendMessage }) => {
+const MessageForm = ({ sendMessage }) => {
   const [message, setMessage] = useState('');
 
   const handleSubmit = event => {
@@ -33,20 +32,31 @@ const SendMessageForm = ({ sendMessage }) => {
 
   const classes = useStyles();
   return (
-    <Paper component="form" onSubmit={handleSubmit}>
+    <Paper
+      className={classes.root}
+      component="form"
+      elevation={2}
+      onSubmit={handleSubmit}
+    >
       <InputBase
+        autoComplete="off"
+        autoFocus
         className={classes.input}
-        inputProps={{ 'aria-label': 'type here' }}
         name="message"
         onChange={handleInputChange}
-        placeholder="Type here..."
+        placeholder="Escriba aquí..."
         value={message}
       />
-      <IconButton type="submit" className={classes.iconButton} aria-label="search">
+      <IconButton
+        type="submit"
+        className={classes.iconButton}
+        aria-label="search"
+        color="primary"
+      >
         <SendIcon />
       </IconButton>
     </Paper>
   );
 };
 
-export default SendMessageForm;
+export default MessageForm;
