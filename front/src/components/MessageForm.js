@@ -22,8 +22,10 @@ const MessageForm = ({ sendMessage }) => {
 
   const handleSubmit = event => {
     event.preventDefault();
-    sendMessage(message);
-    setMessage('');
+    if (message) {
+      sendMessage(message);
+      setMessage('');
+    }
   };
 
   const handleInputChange = event => {
